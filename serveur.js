@@ -60,3 +60,10 @@ app.get('/bateaux/:type', function (req, res) {
         })
     }
 });
+
+app.get('/stations', function (req, res) {
+    connection.query("SELECT id, nom FROM stations", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});

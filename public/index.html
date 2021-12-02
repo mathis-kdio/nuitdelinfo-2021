@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Pokedex</title>
+        <meta charset="utf8"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    </head>
+	<body>
+		<div id="app">
+            <v-app :dark="darkMode">
+				<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+					<v-select :dark="darkMode" v-on:change="getPokemons($event.nom)" :items="types" item-text="nom" item-value="couleur" label="Types de pokemons" return-object outlined ></v-select>
+					<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
+					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
+					<v-container>
+						<v-row>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(pokemon, index) in pokemonsAffiches" :key="index">
+								<pokemon :pokemon="pokemon" :darkmode="darkMode"></pokemon>
+							</v-col>
+						</v-row>
+					</v-container>
+					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
+				</v-container>
+			</v-app>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="./js/pokemon.js"></script>
+		<script language="javascript">
+			new Vue({
+				el:'#app',
+				vuetify: new Vuetify(),
+				data:{
+					pokemons:[],
+					types:[],
+					darkMode: false,
+					pokemonsAffiches:[],
+					page: 1,
+					nbPages: 0,
+					pokemonParPages: 4
+				},
+				created:function(){
+					this.getTypes();
+					this.getPokemons();
+				},
+				methods:{
+					majPage:function(page) {
+						this.page = page
+						this.pokemonsAffiches = []
+						this.nbPages = Math.ceil(this.pokemons.length / this.pokemonParPages)
+						for (let i = 0; i < this.pokemonParPages; i++) {
+							let poke = this.pokemons[(page - 1) * this.pokemonParPages + i]
+							if (poke) {
+								this.pokemonsAffiches.push(poke)
+							}
+						}
+					},
+					getTypes:function() {
+						let self = this;
+						axios.get("types").then(function(reponse){
+							self.types = reponse.data;
+							self.types.unshift({nom:"Tous", id:"-1"})
+						});
+					},
+					getPokemons:function(type) {
+						let self = this;
+						if (type == "Tous") {
+							axios.get("pokemons/all").then(function(reponse){
+								self.pokemons = reponse.data;
+								self.majPage(1)
+							});
+						}
+						else if (type != undefined) {
+							axios.get("pokemons/"+ type).then(function(reponse){
+								self.pokemons = reponse.data;
+								self.majPage(1)
+							});
+						}
+					},
+				}
+			})
+		</script>
+	</body>
+</html>

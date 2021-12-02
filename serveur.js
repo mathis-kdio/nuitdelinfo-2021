@@ -35,3 +35,12 @@ app.get('/sauveteurs', function (req, res) {
         res.send(result);
     })
 });
+
+app.get('/bateaux', function (req, res) {
+    connection.query("SELECT id, nom FROM bateaux_categories", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
+});

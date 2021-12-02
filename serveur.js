@@ -52,8 +52,6 @@ app.get('/bateaux/:type', function (req, res) {
         })
     }
     else {
-        //Filtrage par type et pokemon peut avoir plusieurs types donc .some()
-        //res.send(database.pokemons.filter(({types}) => types.some(type => type.nom == req.params.type)));
         connection.query("SELECT id, nom, type, annee_debut FROM bateaux WHERE type=" + type, function (err, result) {
             if (err) throw (err);
             res.send(result);
@@ -66,4 +64,20 @@ app.get('/stations', function (req, res) {
         if (err) throw (err);
         res.send(result);
     })
+});
+
+app.get('/sorties-en-mer/:type', function (req, res) {
+    let type = req.params.type;
+    if (type == 'all') {
+        connection.query("SELECT id, ville, date, commandant, succes, morts FROM sorties_en_mer", function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
+    else {
+        connection.query("SELECT v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE siecle=" + type, function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
 });

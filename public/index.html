@@ -22,10 +22,10 @@
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
-					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="bateaux" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
 					<v-row>
 						<v-row>
-							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateaux" :key="index">
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
 								<v-card :dark="darkMode">
 									<v-card-title>
 										<div class="d-flex align-center">
@@ -81,6 +81,7 @@
 				data:{
 					sauveteurs:[],
 					bateaux:[],
+					bateauxAffiches:[],
 					types:[],
 					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
 					darkMode: false,
@@ -95,14 +96,14 @@
 					majPage:function(page) {
 						this.page = page
 						this.sauveteurs = []
-						this.bateaux = []
+						this.bateauxAffiches = []
+						this.bateauxAffiches = this.bateaux
 						
 					},
 					getTypesBateaux:function() {
 						let self = this;
-						axios.get("id").then(function(reponse){
+						axios.get("bateaux").then(function(reponse){
 							self.types = reponse.data;
-							console.log(types)
 						});
 						
 					},
@@ -118,15 +119,15 @@
 						let self = this;
 						console.log(type)
 						if(type == undefined){
-							self.majPage(1)
 							axios.get("bateaux/all").then(function(reponse){
-							self.bateaux = reponse.data;
-						});	
+								self.bateaux = reponse.data;
+								self.majPage(1)
+							});	
 						}
 						else{
-							self.majPage(1)
-							axios.get("bateaux" + type).then(function(reponse){
+							axios.get("bateaux/" + type).then(function(reponse){
 							self.bateaux = reponse.data;
+							self.majPage(1)
 						});	
 						}
 												

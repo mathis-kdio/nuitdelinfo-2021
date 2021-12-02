@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Easter Egg</title>
+        <meta charset="utf8"/>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    </head>
+	<body class="background">
+        <div id="app">
+            <div id="page-container">
+                <div id="content-wrap">
+                    <v-toolbar  color="#266068">
+                        <a href="https://www.esiea.fr/" target="_blank">
+                            <v-img src="./images/easter-egg-1.png" max-width="50" max-height="150"></v-img>
+                        </a>
+                        <v-toolbar-title classe="text--white"><h1 style="color: white;">Un homme à la bière</h1></v-toolbar-title>
+                    </v-toolbar>
+                    <v-container class="d-flex align center">
+                        <v-row >
+                            <v-col class="ma-0 pa-0 pt-0">
+                                    <v-img :src="src1" @click="changeImage(src1,1)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src2" @click="changeImage(src2,2)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src3" @click="changeImage(src3,3)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src4" @click="changeImage(src4,4)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src5" @click="changeImage(src5,5)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src6" @click="changeImage(src6,6)" max-width="100"></v-img>
+                            </v-col>
+                            <div id="emitter"></div>
+                        </v-row>
+                    </v-container>
+                </div>
+            <v-footer app id="footer" dark padless>
+                <v-card flat tile>
+                    <v_card-text>
+                        Soit attentif, jette un oeil partout ;)
+                    </v_card-text>
+                </v-card>
+            </v-footer>
+            </div>            
+        </div>
+        
+    </body>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+    <script language="javascript">
+        new Vue({
+                el: '#app',
+                vuetify: new Vuetify(),
+                data:{
+                    src1: './images/easter-egg-1.png',
+                    src2: './images/easter-egg-1.png',
+                    src3: './images/easter-egg-1.png',
+                    src4: './images/easter-egg-1.png',
+                    src5: './images/easter-egg-1.png',
+                    src6: './images/easter-egg-1.png',
+                    un: 1,
+                    deux: 1,
+                    trois: 1,
+                    quatre: 1,
+                    cinq: 1,
+                    six: 1
+                },
+                created:function(){
+					this.checkWin();
+				},
+                methods:{
+                    checkWin: function() {
+                        check = 0;
+                        if (this.un == 1)
+                            check ++;
+                        if (this.deux == 2)
+                            check ++;
+                        if (this.trois == 1)
+                            check ++;
+                        if (this.quatre == 2)
+                            check ++;
+                        if (this.cinq == 1)
+                            check ++;
+                        if (this.six == 1)
+                            check ++;
+                        if (check == 6){
+                            console.log("c'est la win");
+                            window.location.pathname = "C:/Users/tomla/Documents/GitHub/nuitdelinfo-2021/letsgo.html";
+                        }
+                    },
+                    changeImage: function(src, id) {
+                        if (src == "./images/easter-egg-2.png"){
+                            if (id == 1){
+                                this.src1 ="./images/easter-egg-1.png";
+                                this.un = 1;
+                            }
+                            if (id == 2){
+                                this.src2 ="./images/easter-egg-1.png";
+                                this.deux = 1;
+                            }
+                            if (id == 3){
+                                this.src3 ="./images/easter-egg-1.png";
+                                this.trois = 1;
+                            }
+                            if (id == 4){
+                                this.src4 ="./images/easter-egg-1.png";
+                                this.quatre = 1;
+                            }
+                            if (id == 5){
+                                this.src5 ="./images/easter-egg-1.png";
+                                this.cinq = 1;
+                            }
+                            if (id == 6){
+                                this.src6 ="./images/easter-egg-1.png";
+                                this.six = 1;
+                            }
+                        }
+                        else if (src == "./images/easter-egg-1.png"){
+                            if (id == 1){
+                                this.src1 ="./images/easter-egg-2.png";
+                                this.un = 2;
+                            }
+                            if (id == 2){
+                                this.src2 ="./images/easter-egg-2.png";
+                                this.deux = 2;
+                            }
+                            if (id == 3){
+                                this.src3 ="./images/easter-egg-2.png";
+                                this.trois = 2;
+                            }
+                            if (id == 4){
+                                this.src4 ="./images/easter-egg-2.png";
+                                this.quatre = 2;
+                            }
+                            if (id == 5){
+                                this.src5 ="./images/easter-egg-2.png";
+                                this.cinq = 2;
+                            }
+                            if (id == 6){
+                                this.src6 ="./images/easter-egg-2.png";
+                                this.six = 2;
+                            }
+                        }
+                        this.checkWin();
+                    }              
+                }
+            });
+            
+    </script>
+</html>

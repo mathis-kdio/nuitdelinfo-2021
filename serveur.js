@@ -29,6 +29,10 @@ app.get(['/','/index.html'], function(req, res) {
     res.sendFile(path.join(__dirname +'/public/index.html'));
 });
 
+app.get(['/admin','/admin.html'], function(req, res) {
+    res.sendFile(path.join(__dirname +'/public/admin.html'));
+});
+
 app.get('/sauveteurs', function (req, res) {
     connection.query("SELECT nom, prenom, date_naissance FROM sauveteurs", function (err, result) {
         if (err) throw (err);
@@ -46,13 +50,13 @@ app.get('/bateaux', function (req, res) {
 app.get('/bateaux/:type', function (req, res) {
     let type = req.params.type;
     if (type == 'all') {
-        connection.query("SELECT id, nom, type, annee_debut FROM bateaux", function (err, result) {
+        connection.query("SELECT id, nom, type, annee_debut, description FROM bateaux", function (err, result) {
             if (err) throw (err);
             res.send(result);
         })
     }
     else {
-        connection.query("SELECT id, nom, type, annee_debut FROM bateaux WHERE type=" + type, function (err, result) {
+        connection.query("SELECT id, nom, type, annee_debut, description FROM bateaux WHERE type=" + type, function (err, result) {
             if (err) throw (err);
             res.send(result);
         })
@@ -60,10 +64,26 @@ app.get('/bateaux/:type', function (req, res) {
 });
 
 app.get('/stations', function (req, res) {
-    connection.query("SELECT id, nom FROM stations", function (err, result) {
+    connection.query("SELECT id, nom, creation, suppression FROM stations", function (err, result) {
         if (err) throw (err);
         res.send(result);
     })
+});
+
+app.get('/stations/:id', function (req, res) {
+    let id = req.params.id;
+    if (id == 'all') {
+        connection.query("SELECT id, nom, creation, suppression FROM stations", function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })   
+    }
+    else {
+        connection.query("SELECT id, nom, creation, suppression FROM stations WHERE id=" + id, function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
 });
 
 app.get('/sorties-en-mer/:type', function (req, res) {

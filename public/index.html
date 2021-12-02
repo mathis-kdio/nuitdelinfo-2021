@@ -22,7 +22,7 @@
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
-					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
 					<v-row>
 						<v-row>
 							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
@@ -34,15 +34,11 @@
 										</div>
 									</v-card-title>
 									<v-card-text class="d-flex">
-										<v-row>
-											<v-col sm="6" xs="12">
-												<v-container class="d-flex flex-column">
-													<v-container>
-														Je suis un bateau
-													</v-container>
-												</v-container>
-											</v-col>
-										</v-row>
+										<v-container class="d-flex flex-column">
+											<v-container>
+												{{bateau.description}}
+											</v-container>
+										</v-container>	
 									</v-card-text>
 								</v-card>
 							</v-col>
@@ -84,6 +80,7 @@
 					bateauxAffiches:[],
 					sorties:[],
 					sortiesAffiches:[],
+					categorieSelect: undefined,
 					types:[],
 					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}],
 					darkMode: false,
@@ -123,7 +120,6 @@
 					},
 					getBateaux:function(type) {
 						let self = this;
-						console.log(type)
 						if(type == undefined){
 							axios.get("bateaux/all").then(function(reponse){
 								self.bateaux = reponse.data;
@@ -157,6 +153,7 @@
 					},
 					getCategories:function(categorie) {
 						let self = this;
+						this.categorieSelect = categorie
 						if(categorie == "sauveteurs")
 							this.getSauveteurs();
 						if(categorie == "bateaux"){

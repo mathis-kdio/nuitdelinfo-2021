@@ -82,8 +82,10 @@
 					sauveteurs:[],
 					bateaux:[],
 					bateauxAffiches:[],
+					sorties:[],
+					sortiesAffiches:[],
 					types:[],
-					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}],
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
@@ -98,6 +100,10 @@
 						this.sauveteurs = []
 						this.bateauxAffiches = []
 						this.bateauxAffiches = this.bateaux
+						this.bateaux = []
+						this.sortiesAffiches = []
+						this.sortiesAffiches = this.sorties
+						this.sorties = []
 						
 					},
 					getTypesBateaux:function() {
@@ -132,6 +138,23 @@
 						}
 												
 					},
+					getSorties:function(type) {
+						let self = this;
+						console.log(type)
+						if(type == undefined){
+							axios.get("sorties-en-mer/all").then(function(reponse){
+								self.sorties = reponse.data;
+								self.majPage(1)
+							});	
+						}
+						else{
+							axios.get("sorties-en-mer/" + type).then(function(reponse){
+							self.sorties = reponse.data;
+							self.majPage(1)
+						});	
+						}
+												
+					},
 					getCategories:function(categorie) {
 						let self = this;
 						if(categorie == "sauveteurs")
@@ -141,6 +164,10 @@
 							this.getBateaux();		
 						
 						}
+						if(categorie == "sorties en mer"){
+							this.getSorties();						
+						}
+						
 							
 					},
 					

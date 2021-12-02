@@ -117,10 +117,19 @@
 					getBateaux:function(type) {
 						let self = this;
 						console.log(type)
-						self.majPage(1)
+						if(type == undefined){
+							self.majPage(1)
+							axios.get("bateaux/all").then(function(reponse){
+							self.bateaux = reponse.data;
+						});	
+						}
+						else{
+							self.majPage(1)
 							axios.get("bateaux" + type).then(function(reponse){
 							self.bateaux = reponse.data;
-						});							
+						});	
+						}
+												
 					},
 					getCategories:function(categorie) {
 						let self = this;

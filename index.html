@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>analyse</title>
+		<title>Easter Egg</title>
         <meta charset="utf8"/>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -16,114 +16,42 @@
                 <div id="content-wrap">
                     <v-toolbar  color="#266068">
                         <a href="https://www.esiea.fr/" target="_blank">
-                            <v-img src="./Images/Logo_ESIEA.png" max-width="150" max-height="150"></v-img>
+                            <v-img src="./images/easter-egg-1.png" max-width="50" max-height="150"></v-img>
                         </a>
-                        <v-toolbar-title classe="text--white"><h1 style="color: white;">Analyse Qualitative de Site Web</h1></v-toolbar-title>
+                        <v-toolbar-title classe="text--white"><h1 style="color: white;">Un homme à la bière</h1></v-toolbar-title>
                     </v-toolbar>
                     <v-container class="d-flex align center">
                         <v-row >
-                            <v-col col="12" sm="6" md="3">
-                                <v-text-field label="URL" placeholder="SiteWeb" id="url"></v-text-field>
+                            <v-col class="ma-0 pa-0 pt-0">
+                                    <v-img :src="src1" @click="changeImage(src1,1)" max-width="100"></v-img>
                             </v-col>
-                            <v-col col="12" sm="6" md="3" mt="4">
-                                <v-btn class="button" elevation="2" v-on:click="analyse">Analyser</v-btn>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src2" @click="changeImage(src2,2)" max-width="100"></v-img>
                             </v-col>
-                            <v-col col="12" sm="6" md="3">
-                                <v-btn class="button" :disabled="chargement == -1" v-on:click="createpdf(criteres)">Télécharger</v-btn>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src3" @click="changeImage(src3,3)" max-width="100"></v-img>
                             </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src4" @click="changeImage(src4,4)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src5" @click="changeImage(src5,5)" max-width="100"></v-img>
+                            </v-col>
+                            <v-col class="ma-0 pa-0 pt-5">
+                                    <v-img :src="src6" @click="changeImage(src6,6)" max-width="100"></v-img>
+                            </v-col>
+                            <div id="emitter"></div>
                         </v-row>
-                        <div id="pdf">
-                            <div v-if="criteres[3].score != -2">
-                                <v-row>
-                                    <v-col v-for="critere in criteres" :key="critere.name" cols="1200">
-                                        <v-card color="#266068" width="160">
-                                            <v-card-title class="white--text mt-8">
-                                                <span style="color: white;">{{critere.name}} :</span>
-                                            </v-card-title>
-                                            <v-card-text class="d-flex">
-                                                <div v-if="critere.score == -1" class="d-flex">
-                                                    <v-progress-circular class="indeterminate" :size="100" indeterminate></v-progress-circular>
-                                                </div>
-                                                <div v-else>
-                                                        <h1 style="font-size: 40px;color: white;">
-                                                            {{critere.score}}% 
-                                                        </h1>
-                                                </div>
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                            <div v-if="criteres[3].score > -1" >
-                                <v-row>
-                                    <v-col v-for="critere in criteres" :key="critere.name">
-                                        <v-expansion-panels >
-                                            <v-expansion-panel accordion style="background:#266068 " class="mb-10" > 
-                                                <v-expansion-panel-header class="white--text">
-                                                    <span style="color: white;">Advices for {{critere.name}} :</span>
-                                                </v-expansion-panel-header> 
-                                                <v-expansion-panel-content>
-                                                    <v-expansion-panels accordion focusable id="mon_texte" >
-                                                        
-                                                            <v-expansion-panel v-for="(elt,index) in critere.astuces" :key="index"  v-if="elt.score>=0 && elt.score <1"> 
-                                                                <v-expansion-panel-header >                                              
-                                                                    <v-icon large class="red" v-if="elt.score ==0">mdi-close </v-icon>
-                                                                    <v-icon large class="orange" v-else>mdi-crop-square</v-icon> {{elt.description}}
-                                                                </v-expansion-panel-header>
-                                                                <v-expansion-panel-content>
-                                                                    {{elt.erreurs}}
-                                                                </v-expansion-panel-content>
-                                                            </v-expansion-panel>
-                                                        
-                                                    </v-expansion-panels>
-                                                    <v-expansion-panels accordion focusable>
-                                                            <v-expansion-panel > 
-                                                                <v-expansion-panel-header>                                              
-                                                                    Cas validés :
-                                                                </v-expansion-panel-header>
-                                                                <v-expansion-panel-content id="mon_texte" v-for="(elt,index) in critere.astuces" :key="index"  v-if="elt.score == 1"> 
-                                                                    <v-icon large class="green">mdi-check </v-icon> {{elt.description}}
-                                                                </v-expansion-panel-content>
-                                                            </v-expansion-panel>
-                                                    </v-expansion-panels>
-                                                </v-expansion-panel-content>
-                                            </v-expansion-panel>
-                                        </v-expansion-panels>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                        </div>
-                        
                     </v-container>
                 </div>
-                <!--<v-footer dark padless bottom relative  id="footer">
-                    <v-card class="flex" flat tile padless>
-                        <v-card-title class="teal">
-                            <span class="subheading">Plateforme visant à analyser différents critères qualitatifs d'un site WEB selon 4 approches : la performance, le référencement, les bonnes pratiques ainsi que l'accesibilité.</span>
-                            <v-spacer></v-spacer>
-                            <a href="https://www.esiea.fr/">
-                                <v-img src="./Images/Logo_ESIEA.png" max-width="150" max-height="150"></v-img>
-                            </a>
-                    </v-card>
-                </v-footer>-->
-                <v-footer app id="footer" dark padless>
+            <v-footer app id="footer" dark padless>
                 <v-card flat tile>
                     <v_card-text>
-                        Plateforme visant à analyser différents critères qualitatifs d'un site WEB selon 4 approches : la performance, le référencement, les bonnes pratiques ainsi que l'accesibilité.
+                        Soit attentif, jette un oeil partout ;)
                     </v_card-text>
                 </v-card>
-                
-                <v-spacer></v-spacer>
-                <a href="https://www.esiea.fr/">
-                    <v-img src="./Images/Logo_ESIEA.png" max-width="150" max-height="150"></v-img>
-                </a>
             </v-footer>
-            </div>
-            
-
-            
-            
-            
+            </div>            
         </div>
         
     </body>
@@ -137,152 +65,97 @@
                 el: '#app',
                 vuetify: new Vuetify(),
                 data:{
-                    chargement: -1,
-                    criteres: [
-                        {name: "performance", score: -2, 
-                            astuces:[]
-                        },
-                        {name: "seo", score: -2,                     
-                            astuces:[]
-                        },
-                        {name: "best-practices", score: -2,                     
-                            astuces:[]
-                        },
-                        {name: "accessibility", score: -2,                     
-                            astuces:[]
-                        }
-                    ],
-                    icons: [
-                        'mdi-facebook',
-                        'mdi-twitter',
-                        'mdi-linkedin',
-                        'mdi-instagram',
-                    ]
+                    src1: './images/easter-egg-1.png',
+                    src2: './images/easter-egg-1.png',
+                    src3: './images/easter-egg-1.png',
+                    src4: './images/easter-egg-1.png',
+                    src5: './images/easter-egg-1.png',
+                    src6: './images/easter-egg-1.png',
+                    un: 1,
+                    deux: 1,
+                    trois: 1,
+                    quatre: 1,
+                    cinq: 1,
+                    six: 1
                 },
+                created:function(){
+					this.checkWin();
+				},
                 methods:{
-                    clean_url: function(url){
-                        url = url;
-                        url = url.replace("https://", "https")
-                        url = url.replace("http://", "http")
-                        
-                        return url;
-                    },
-                    analyse: function(){
-                        let self = this;
-                        this.chargement = -1;
-                        for(critere of this.criteres) {
-                            critere.score = -1;
-                            critere.astuce = [];
+                    checkWin: function() {
+                        check = 0;
+                        if (this.un == 1)
+                            check ++;
+                        if (this.deux == 2)
+                            check ++;
+                        if (this.trois == 1)
+                            check ++;
+                        if (this.quatre == 2)
+                            check ++;
+                        if (this.cinq == 1)
+                            check ++;
+                        if (this.six == 1)
+                            check ++;
+                        if (check == 6){
+                            console.log("c'est la win");
+                            window.location.pathname = "C:/Users/tomla/Documents/GitHub/nuitdelinfo-2021/letsgo.html";
                         }
-                        console.log(document.getElementById('url').value)
-                        self.run(document.getElementById('url').value);
-                        url =  self.clean_url(document.getElementById('url').value);
-                        axios.get("analyse" + url).then(function(reponse){
-                        self.checking = reponse.data;
-					    });
                     },
-                    run: function(mon_url) {
-                        const url = this.setUpQuery(mon_url);
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(json => {
-                                    if (json.error) {
-                                        console.log("url invalide")
-                                        for (critere of this.criteres) {
-                                            critere.score = -2;
-                                        }
-                                        document.getElementById('url').value='url invalide';
-                                    }
-                                    else {
-                                        this.parse(json);
-                                        this.chargement = 1
-                                    }
-                            });
-                    },
-                    setUpQuery: function(mon_url) {
-                        const api = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed/?locale=fr&category=seo&category=performance&category=accessibility&category=best_practices';
-                        const parameters = {
-                            url: encodeURIComponent(mon_url),
-                            key: "AIzaSyD2vUCOiV-U8P0Kq-JUXPGP-K89cKYs0pc"
-                        };
-                        let query = `${api}`;
-                        for (key in parameters) {
-                            query += `&${key}=${parameters[key]}`;
-                        }
-                        console.log(query)     
-                        return query;
-                    },
-                    parse: function(mon_json) {
-                        console.log(mon_json)
-                        for(critere of this.criteres) {
-                            critere.score = mon_json.lighthouseResult.categories[critere.name].score * 100;
-                            for (let i = 0; i < mon_json.lighthouseResult.categories[critere.name].auditRefs.length; i++) {
-                                var erreurs = "";
-                                if(mon_json.lighthouseResult.audits[mon_json.lighthouseResult.categories[critere.name].auditRefs[i].id].description != null){
-                                    erreurs = mon_json.lighthouseResult.audits[mon_json.lighthouseResult.categories[critere.name].auditRefs[i].id].description;
-                                    if(erreurs.indexOf("[En savoir plus]") !== -1){
-                                        erreurs = erreurs.split('[En savoir plus]');
-                                    } else if(erreurs.indexOf("[Découvrez-en davantage]") !== -1){
-                                        erreurs = erreurs.split('[Découvrez-en davantage]');
-                                    } else if(erreurs.indexOf("[Learn more]") !== -1){
-                                        erreurs = erreurs.split('[Learn more]');
-                                    } else {
-                                        erreurs = erreurs.split();
-                                    }
-                                    if(erreurs[0].indexOf("[") !== -1){
-                                        erreurs[0] = "";
-                                    }
-                                }
-                                critere.astuces.push({
-                                "description": mon_json.lighthouseResult.audits[mon_json.lighthouseResult.categories[critere.name].auditRefs[i].id].title, 
-                                "score": mon_json.lighthouseResult.audits[mon_json.lighthouseResult.categories[critere.name].auditRefs[i].id].score,
-                                "erreurs": erreurs[0]
-                                })
-
+                    changeImage: function(src, id) {
+                        if (src == "./images/easter-egg-2.png"){
+                            if (id == 1){
+                                this.src1 ="./images/easter-egg-1.png";
+                                this.un = 1;
                             }
-                            critere.astuces.sort(function (a, b) {
-                                return a.score - b.score;
-                            });
-                        }
-                    },
-                    getColor: function(value) {
-                        if (value > 75) {
-                        return '#00FF00';
-                        } else if (value > 50) {
-                        return '#FFFF00';
-                        } else if (value > 25) {
-                        return '#FFA500';
-                        }else {
-                            return '#FF0000';
-                        }
-                    },
-                    downloadpdf: function() {
-                        var element = document.getElementById('pdf');
-                        html2pdf(element);
-                    },
-                    createpdf: function(){
-                        var doc = new jsPDF(), 
-                        margin = 0.5;
-                        var curser =10
-                        
-                        for (let index = 0; index < this.criteres.length; index++) {
-                            for (let i = 0; i < this.criteres[index].astuces.length; i++) {
-                                if(this.criteres[index].astuces[i].score>=0 && this.criteres[index].astuces[i].score <1)
-                                {
-                                    var astuce = doc.setFontSize(12).splitTextToSize(this.criteres[index].astuces[i].erreurs, 180)
-                                    doc.text(15, curser, astuce)
-                                    curser+=20
-                                    if(curser % 290 == 0)
-                                    {
-                                        doc.addPage()
-                                        curser = 10
-                                    }
-                                }
+                            if (id == 2){
+                                this.src2 ="./images/easter-egg-1.png";
+                                this.deux = 1;
                             }
-                            
+                            if (id == 3){
+                                this.src3 ="./images/easter-egg-1.png";
+                                this.trois = 1;
+                            }
+                            if (id == 4){
+                                this.src4 ="./images/easter-egg-1.png";
+                                this.quatre = 1;
+                            }
+                            if (id == 5){
+                                this.src5 ="./images/easter-egg-1.png";
+                                this.cinq = 1;
+                            }
+                            if (id == 6){
+                                this.src6 ="./images/easter-egg-1.png";
+                                this.six = 1;
+                            }
                         }
-                        doc.save('advices.pdf');
-                    }
+                        else if (src == "./images/easter-egg-1.png"){
+                            if (id == 1){
+                                this.src1 ="./images/easter-egg-2.png";
+                                this.un = 2;
+                            }
+                            if (id == 2){
+                                this.src2 ="./images/easter-egg-2.png";
+                                this.deux = 2;
+                            }
+                            if (id == 3){
+                                this.src3 ="./images/easter-egg-2.png";
+                                this.trois = 2;
+                            }
+                            if (id == 4){
+                                this.src4 ="./images/easter-egg-2.png";
+                                this.quatre = 2;
+                            }
+                            if (id == 5){
+                                this.src5 ="./images/easter-egg-2.png";
+                                this.cinq = 2;
+                            }
+                            if (id == 6){
+                                this.src6 ="./images/easter-egg-2.png";
+                                this.six = 2;
+                            }
+                        }
+                        this.checkWin();
+                    }              
                 }
             });
             

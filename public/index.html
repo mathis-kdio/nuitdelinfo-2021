@@ -22,7 +22,31 @@
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
+					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="bateaux" item-text="nom" label="Bateaux" return-object outlined ></v-select>
 					<v-row>
+						<v-row>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateaux" :key="index">
+								<v-card :dark="darkMode">
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
+											<v-container>{{ bateau.nom }}</v-container>
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-row>
+											<v-col sm="6" xs="12">
+												<v-container class="d-flex flex-column">
+													<v-container>
+														Je suis un bateau
+													</v-container>
+												</v-container>
+											</v-col>
+										</v-row>
+									</v-card-text>
+								</v-card>
+							</v-col>
+						</v-row>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>
@@ -43,7 +67,7 @@
 								</v-card-text>
 							</v-card>
 						</v-col>
-					</v-row>
+					</v-row>			
 				</v-container>
 			</v-app>
 		</div>
@@ -56,9 +80,10 @@
 				vuetify: new Vuetify(),
 				data:{
 					sauveteurs:[],
+					bateaux:[],
+					types:[],
 					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
 					darkMode: false,
-					sauveteursAffiches:[],
 					page: 1,
 					nbPages: 0,
 					sauveteursParPages: 4
@@ -69,27 +94,53 @@
 				methods:{
 					majPage:function(page) {
 						this.page = page
-						this.sauveteursAffiches = []
-						this.nbPages = Math.ceil(this.sauveteurs.length / this.sauveteursParPages)
-						for (let i = 0; i < this.sauveteursParPages; i++) {
-							let poke = this.sauveteurs[(page - 1) * this.sauveteursParPages + i]
-							if (poke) {
-								this.sauveteursAffiches.push(poke)
-							}
-						}
+						this.sauveteurs = []
+						this.bateaux = []
+						
+					},
+					getTypesBateaux:function() {
+						let self = this;
+						axios.get("id").then(function(reponse){
+							self.types = reponse.data;
+							console.log(types)
+						});
+						
 					},
 					getSauveteurs:function() {
 						let self = this;
+						self.majPage(1)
 						axios.get("sauveteurs").then(function(reponse){
 							self.sauveteurs = reponse.data;
-							self.majPage(1)
+							
 						});
+					},
+					getBateaux:function(type) {
+						let self = this;
+						console.log(type)
+						if(type == undefined){
+							self.majPage(1)
+							axios.get("bateaux/all").then(function(reponse){
+							self.bateaux = reponse.data;
+						});	
+						}
+						else{
+							self.majPage(1)
+							axios.get("bateaux" + type).then(function(reponse){
+							self.bateaux = reponse.data;
+						});	
+						}
+												
 					},
 					getCategories:function(categorie) {
 						let self = this;
 						if(categorie == "sauveteurs")
-								this.getSauveteurs();
+							this.getSauveteurs();
+						if(categorie == "bateaux"){
+							this.getTypesBateaux();
+							this.getBateaux();		
 						
+						}
+							
 					},
 					
 				}

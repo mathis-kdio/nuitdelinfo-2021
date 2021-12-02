@@ -50,13 +50,13 @@ app.get('/bateaux', function (req, res) {
 app.get('/bateaux/:type', function (req, res) {
     let type = req.params.type;
     if (type == 'all') {
-        connection.query("SELECT id, nom, type, annee_debut FROM bateaux", function (err, result) {
+        connection.query("SELECT id, nom, type, annee_debut, description FROM bateaux", function (err, result) {
             if (err) throw (err);
             res.send(result);
         })
     }
     else {
-        connection.query("SELECT id, nom, type, annee_debut FROM bateaux WHERE type=" + type, function (err, result) {
+        connection.query("SELECT id, nom, type, annee_debut, description FROM bateaux WHERE type=" + type, function (err, result) {
             if (err) throw (err);
             res.send(result);
         })

@@ -29,6 +29,10 @@ app.get(['/','/index.html'], function(req, res) {
     res.sendFile(path.join(__dirname +'/public/index.html'));
 });
 
+app.get(['/admin','/admin.html'], function(req, res) {
+    res.sendFile(path.join(__dirname +'/public/admin.html'));
+});
+
 app.get('/sauveteurs', function (req, res) {
     connection.query("SELECT nom, prenom, date_naissance FROM sauveteurs", function (err, result) {
         if (err) throw (err);

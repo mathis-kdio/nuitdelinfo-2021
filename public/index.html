@@ -22,7 +22,7 @@
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
-					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-select class="d-sr-only-focusable" :dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
 					<v-row>
 						<v-row>
 							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
@@ -98,6 +98,7 @@
 						this.sauveteurs = []
 						this.bateauxAffiches = []
 						this.bateauxAffiches = this.bateaux
+						this.bateaux= []
 						
 					},
 					getTypesBateaux:function() {
@@ -117,7 +118,6 @@
 					},
 					getBateaux:function(type) {
 						let self = this;
-						console.log(type)
 						if(type == undefined){
 							axios.get("bateaux/all").then(function(reponse){
 								self.bateaux = reponse.data;

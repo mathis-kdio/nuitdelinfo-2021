@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Pokedex</title>
+		<title>Sauveteur dunkerquois</title>
         <meta charset="utf8"/>
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
@@ -11,18 +11,63 @@
 	<body>
 		<div id="app">
             <v-app :dark="darkMode">
+				<!--<div >
+					<v-sheet color="white"elevation="6"height="100">
+						<v-img width="500px" height="150px" src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>
+					</v-sheet>
+				</div>-->
 				<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-					<v-select :dark="darkMode" v-on:change="getPokemons($event.nom)" :items="types" item-text="nom" item-value="couleur" label="Types de pokemons" return-object outlined ></v-select>
+					<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
 					<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
-					<v-container>
+				</v-container>
+				<v-container>
+					<v-select :dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-row>
 						<v-row>
-							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(pokemon, index) in pokemonsAffiches" :key="index">
-								<pokemon :pokemon="pokemon" :darkmode="darkMode"></pokemon>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
+								<v-card :dark="darkMode">
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
+											<v-container>{{ bateau.nom }}</v-container>
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-row>
+											<v-col sm="6" xs="12">
+												<v-container class="d-flex flex-column">
+													<v-container>
+														Je suis un bateau
+													</v-container>
+												</v-container>
+											</v-col>
+										</v-row>
+									</v-card-text>
+								</v-card>
 							</v-col>
 						</v-row>
-					</v-container>
-					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-row>
+										<v-col sm="6" xs="12">
+											<v-container class="d-flex flex-column">
+												<v-container>
+													{{ sauveteur.date_naissance }}
+												</v-container>
+											</v-container>
+										</v-col>
+									</v-row>
+								</v-card-text>
+							</v-card>
+						</v-col>
+					</v-row>			
 				</v-container>
 			</v-app>
 		</div>
@@ -34,52 +79,71 @@
 				el:'#app',
 				vuetify: new Vuetify(),
 				data:{
-					pokemons:[],
+					sauveteurs:[],
+					bateaux:[],
+					bateauxAffiches:[],
 					types:[],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
 					darkMode: false,
-					pokemonsAffiches:[],
 					page: 1,
 					nbPages: 0,
-					pokemonParPages: 4
+					sauveteursParPages: 4
 				},
 				created:function(){
-					this.getTypes();
-					this.getPokemons();
+					this.getCategories();
 				},
 				methods:{
 					majPage:function(page) {
 						this.page = page
-						this.pokemonsAffiches = []
-						this.nbPages = Math.ceil(this.pokemons.length / this.pokemonParPages)
-						for (let i = 0; i < this.pokemonParPages; i++) {
-							let poke = this.pokemons[(page - 1) * this.pokemonParPages + i]
-							if (poke) {
-								this.pokemonsAffiches.push(poke)
-							}
-						}
+						this.sauveteurs = []
+						this.bateauxAffiches = []
+						this.bateauxAffiches = this.bateaux
+						
 					},
-					getTypes:function() {
+					getTypesBateaux:function() {
 						let self = this;
-						axios.get("types").then(function(reponse){
+						axios.get("bateaux").then(function(reponse){
 							self.types = reponse.data;
-							self.types.unshift({nom:"Tous", id:"-1"})
+						});
+						
+					},
+					getSauveteurs:function() {
+						let self = this;
+						self.majPage(1)
+						axios.get("sauveteurs").then(function(reponse){
+							self.sauveteurs = reponse.data;
+							
 						});
 					},
-					getPokemons:function(type) {
+					getBateaux:function(type) {
 						let self = this;
-						if (type == "Tous") {
-							axios.get("pokemons/all").then(function(reponse){
-								self.pokemons = reponse.data;
+						console.log(type)
+						if(type == undefined){
+							axios.get("bateaux/all").then(function(reponse){
+								self.bateaux = reponse.data;
 								self.majPage(1)
-							});
+							});	
 						}
-						else if (type != undefined) {
-							axios.get("pokemons/"+ type).then(function(reponse){
-								self.pokemons = reponse.data;
-								self.majPage(1)
-							});
+						else{
+							axios.get("bateaux/" + type).then(function(reponse){
+							self.bateaux = reponse.data;
+							self.majPage(1)
+						});	
 						}
+												
 					},
+					getCategories:function(categorie) {
+						let self = this;
+						if(categorie == "sauveteurs")
+							this.getSauveteurs();
+						if(categorie == "bateaux"){
+							this.getTypesBateaux();
+							this.getBateaux();		
+						
+						}
+							
+					},
+					
 				}
 			})
 		</script>

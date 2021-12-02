@@ -17,14 +17,14 @@
 					</v-sheet>
 				</div>-->
 				<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-					<v-select :dark="darkMode" v-on:change="getCategories($event.nom)" :items="categories" item-text="nom" item-value="couleur" label="Catégories" return-object outlined ></v-select>
+					<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
 					<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
 					<v-row>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteursAffiches" :key="index">
-							<v-card :dark="darkmode">
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
+							<v-card :dark="darkMode">
 								<v-card-title>
 									<div class="d-flex align-center">
 										<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
@@ -56,7 +56,7 @@
 				vuetify: new Vuetify(),
 				data:{
 					sauveteurs:[],
-					categories:[],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
 					darkMode: false,
 					sauveteursAffiches:[],
 					page: 1,
@@ -64,7 +64,6 @@
 					sauveteursParPages: 4
 				},
 				created:function(){
-					this.getTypes();
 					this.getCategories();
 				},
 				methods:{
@@ -79,28 +78,20 @@
 							}
 						}
 					},
-					getTypes:function() {
+					getSauveteurs:function() {
 						let self = this;
-						axios.get("types").then(function(reponse){
-							self.types = reponse.data;
-							self.types.unshift({nom:"Tous", id:"-1"})
+						axios.get("sauveteurs").then(function(reponse){
+							self.sauveteurs = reponse.data;
+							self.majPage(1)
 						});
 					},
 					getCategories:function(categorie) {
 						let self = this;
-						if (categorie == "Tous") {
-							axios.get("categories/all").then(function(reponse){
-								self.categories = reponse.data;
-								self.majPage(1)
-							});
-						}
-						else if (categorie != undefined) {
-							axios.get("categories/"+ categorie).then(function(reponse){
-								self.sauvetcategorieseurs = reponse.data;
-								self.majPage(1)
-							});
-						}
+						if(categorie == "sauveteurs")
+								this.getSauveteurs();
+						
 					},
+					
 				}
 			})
 		</script>

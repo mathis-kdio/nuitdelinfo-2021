@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>analyse</title>
+        <meta charset="utf8"/>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    </head>
+	<body>
+        <div id="app" >
+            <div id="page-container">
+                <div id="content-wrap">
+                    <v-toolbar  color="#266068">
+                        <v-toolbar-title classe="text--white"><h1 style="color: white;">Du texte est caché</h1></v-toolbar-title>
+                    </v-toolbar>
+                </div>  
+                <div id="footer">
+                    <a href="page3.html" target="_blank">
+                        <p style="color:#025677">Inspecte moi</p>
+                    </a>
+                </div> 
+            </div>  
+        </div>       
+    </body>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+    <script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+    <script language="javascript">
+        new Vue({
+                el: '#app',
+                vuetify: new Vuetify(),
+                data:{
+                },
+                mounted:function(){
+                    this.setup()
+                },
+                methods:{
+                    setup: function () {
+                        var pos_x = Math.random()*(document.body.clientWidth-200);
+                        var pos_y = Math.random()*(document.body.clientHeight-180);
+                        document.getElementById("imageAleatoire").style.left = pos_x + "px";
+                        document.getElementById("imageAleatoire").style.top= pos_y + "px";
+                    },
+                }
+            });    
+    </script>
+</html>

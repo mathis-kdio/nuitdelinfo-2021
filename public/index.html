@@ -10,65 +10,81 @@
     </head>
 	<body>
 		<div id="app">
-            <v-app :dark="darkMode">
-				<!--<div >
-					<v-sheet color="white"elevation="6"height="100">
-						<v-img width="500px" height="150px" src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>
-					</v-sheet>
-				</div>-->
-				<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-					<v-col cols="12" sm="12" md="12" lg="12" xl="6">
-						<v-text-field id="search" label="Recherche" prepend-icon="mdi-magnify" @click:prepend="search"></v-text-field>
-					</v-col>
-					<v-col cols="12" sm="12" md="6" lg="6" xl="6">
+      		<v-app :dark="darkMode">
+				<v-container fluid :dark="darkMode" :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+					<v-container>
+						<v-img src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>	
+					</v-container>	
+					<v-container :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+						
+						<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
+						<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
+						<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
+					</v-container>
+					<v-container>
+						<v-container v-if="categorieSelect == 'bateaux'" fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+							<v-select :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+						</v-container>
 						<v-row>
-							<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
-							<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
-							<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
-						</v-row>
-					</v-col>
-				</v-container>
-				<v-container>
-					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
-					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getSorties('ville', $event.id)" :items="villes" item-text="nom" label="Ville" return-object outlined ></v-select>
-					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getSorties('siecle', $event.id)" :items="siecles" item-text="nom" label="Siècle" return-object outlined ></v-select>
-					<v-row>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
-							<v-card :dark="darkMode">
-								<v-card-title>
-									<div class="d-flex align-center">
-										<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
-										<v-container>{{ bateau.nom }}</v-container>
-									</div>
-								</v-card-title>
-								<v-card-text class="d-flex">
-									<v-container class="d-flex flex-column">
-										<v-container>
-											{{bateau.description}}
-										</v-container>
-									</v-container>	
-								</v-card-text>
-							</v-card>
-						</v-col>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
-							<v-card :dark="darkMode">
-								<v-card-title>
-									<div class="d-flex align-center">
-										<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
-									</div>
-								</v-card-title>
-								<v-card-text class="d-flex">
-									<v-row>
-										<v-col sm="6" xs="12">
-											<v-container class="d-flex flex-column">
-												<v-container>
-													{{ sauveteur.date_naissance }}
-												</v-container>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
+								<v-card :dark="darkMode">
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
+											<v-container>{{ bateau.nom }}</v-container>
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-container class="d-flex flex-column">
+											<v-container>
+												{{bateau.description}}
 											</v-container>
-										</v-col>
-									</v-row>
-								</v-card-text>
-							</v-card>
+										</v-container>	
+									</v-card-text>
+								</v-card>
+							</v-col>
+						</v-row>
+						<v-container  v-if="categorieSelect == 'sauveteurs'">
+							<div class="text-center"  >
+								<v-dialog
+									width="500"
+									v-model="dialog"
+								>
+									<template v-slot:activator="{ on, attrs }">
+									<v-btn
+										:dark="darkMode"
+										v-bind="attrs"
+										v-on="on"
+									>
+										Créer un sauveteur
+									</v-btn>
+									</template>
+							
+									<v-card :dark="darkMode">
+										<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
+											Créer un sauveteur
+										</v-card-title>
+								
+										<v-card-text>
+											<v-form ref="form" class="mx-2" lazy-validation>
+												<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
+												<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
+												<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
+												<v-btn @click="reset">
+													reset
+												</v-btn>
+												<v-btn  @click="submitForm" @click="dialog = false">
+													créer
+												</v-btn>
+												<v-btn @click="dialog = false">
+													quitter
+												</v-btn>
+											</v-form>
+										</v-card-text>
+									</v-card>
+								</v-dialog>
+							</div>
+						</v-container>
 						</v-col>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sortie, index) in sortiesAffiches" :key="index">
 							<v-card :dark="darkMode">
@@ -92,12 +108,12 @@
 									</v-container>
 								</v-card-text>
 							</v-card>
-						</v-col>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
+						</v-col>	
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>
 									<div class="d-flex align-center">
-										<v-container>{{ station.nom }}</v-container>
+										<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
 									</div>
 								</v-card-title>
 								<v-card-text class="d-flex">
@@ -105,10 +121,7 @@
 										<v-col sm="6" xs="12">
 											<v-container class="d-flex flex-column">
 												<v-container>
-													Création: {{ station.creation }}
-												</v-container>
-												<v-container>
-													Suppression: {{ station.suppression }}
+													{{ sauveteur.date_naissance }}
 												</v-container>
 											</v-container>
 										</v-col>
@@ -116,8 +129,31 @@
 								</v-card-text>
 							</v-card>
 						</v-col>
-					</v-row>			
-				</v-container>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
+							<v-card 
+								:dark="darkMode"
+								class="mx-auto"
+							>
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-container>{{ station.nom }}</v-container>
+									</div>
+								</v-card-title>
+								<v-img v-bind:src="'images/stations/' + station.nom + '.png'"></v-img>
+								<v-container>
+									Création : {{ station.creation }}
+									Suppression : {{ station.suppression }}
+								</v-container>
+								<v-container>
+									Informations :
+									<div v-for="(text, i) in station.description.split('\n')" :key="i">
+										{{ text }}
+									</div>
+								</v-container>
+							</v-card>
+						</v-col>		
+					</v-container>
+				<v-container>
 			</v-app>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
@@ -143,7 +179,19 @@
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
-					sauveteursParPages: 4
+					sauveteursParPages: 4,
+					firstname: '',
+					lastname: '',
+					birth:'',
+					nameRules: [
+						v => !!v || 'Name is required',
+						v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+					],
+				
+						dialog: false,
+						notifications: false,
+						sound: true,
+						widgets: false,
 				},
 				created:function(){
 					this.getCategories();
@@ -222,6 +270,7 @@
 						self.majPage(1)
 						axios.get("stations").then(function(reponse){
 							self.stations = reponse.data;
+							self.showDescription = Array(self.stations.length).fill(false)
 						});
 					},
 					getCategories:function(categorie) {
@@ -249,7 +298,20 @@
 						axios.get("search/" + mysearch).then(function(reponse){
 							self.search = reponse.data;
 						});
-					}
+					},
+					submitForm () {
+						this.$refs.form.validate();
+						if(this.$refs.form.validate()){
+							axios.get("create/sauveteurs/" + this.firstname + "/" +this.lastname + "/" +this.birth).then(function(reponse){
+							self.bateaux = reponse.data;
+							
+						});
+						}
+						
+					},
+					reset () {
+						this.$refs.form.reset()
+					},
 					
 				}
 			})

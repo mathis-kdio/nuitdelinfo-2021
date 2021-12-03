@@ -102,20 +102,25 @@ app.get('/stations/:id', function (req, res) {
     }
 });
 
-app.get('/sorties-en-mer/:type', function (req, res) {
-    let type = req.params.type;
-    if (type == 'all') {
-        connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant", function (err, result) {
-            if (err) throw (err);
-            res.send(result);
-        })
-    }
-    else {
-        connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE siecle=" + type, function (err, result) {
-            if (err) throw (err);
-            res.send(result);
-        })
-    }
+app.get('/sorties-en-mer', function (req, res) {
+    connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
+app.get('/sorties-en-mer/siecle/:IdSiecle', function (req, res) {
+    connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE si.id=" + req.params.IdSiecle, function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
+app.get('/sorties-en-mer/ville/:IdVille', function (req, res) {
+    connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE v.id=" + req.params.IdVille, function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
 });
 
 

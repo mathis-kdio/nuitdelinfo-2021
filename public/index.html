@@ -23,7 +23,8 @@
 				</v-container>
 				<v-container>
 					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
-					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Sorties" return-object outlined ></v-select>
+					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getSorties('ville', $event.id)" :items="villes" item-text="nom" label="Ville" return-object outlined ></v-select>
+					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getSorties('siecle', $event.id)" :items="siecles" item-text="nom" label="Siècle" return-object outlined ></v-select>
 					<v-row>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
 							<v-card :dark="darkMode">
@@ -66,9 +67,11 @@
 							<v-card :dark="darkMode">
 								<v-card-title>
 									<div class="d-flex align-center">
-										<v-chip color="black" text-color="white">{{ sortie.id }}</v-chip>
-										<v-container>{{ sortie.ville }}</v-container>
-										<v-container>{{ sortie.siecle }}</v-container>
+										<v-container>
+											{{ sortie.ville }}
+											<v-spacer></v-spacer>  
+											{{ sortie.siecle }}
+										</v-container>
 									</div>
 								</v-card-title>
 								<v-card-text class="d-flex">
@@ -102,6 +105,8 @@
 					sortiesAffiches:[],
 					categorieSelect: undefined,
 					types:[],
+					villes:[],
+					siecles:[],
 					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}],
 					darkMode: false,
 					page: 1,
@@ -132,10 +137,9 @@
 					},
 					getSauveteurs:function() {
 						let self = this;
-						self.majPage(1)
+						self.majPage(1);
 						axios.get("sauveteurs").then(function(reponse){
 							self.sauveteurs = reponse.data;
-							
 						});
 					},
 					getBateaux:function(type) {
@@ -143,33 +147,43 @@
 						if(type == undefined){
 							axios.get("bateaux/all").then(function(reponse){
 								self.bateaux = reponse.data;
-								self.majPage(1)
+								self.majPage(1);
 							});	
 						}
 						else{
 							axios.get("bateaux/" + type).then(function(reponse){
-							self.bateaux = reponse.data;
-							self.majPage(1)
+								self.bateaux = reponse.data;
+								self.majPage(1);
 						});	
-						}
-												
+						}					
 					},
-					getSorties:function(type) {
+					getSorties:function(type, id) {
 						let self = this;
-						console.log(type)
+						console.log(type);
 						if(type == undefined){
-							axios.get("sorties-en-mer/all").then(function(reponse){
+							axios.get("sorties-en-mer/").then(function(reponse){
 								self.sorties = reponse.data;
-								self.majPage(1)
+								self.majPage(1);
 							});	
 						}
 						else{
-							axios.get("sorties-en-mer/" + type).then(function(reponse){
-							self.sorties = reponse.data;
-							self.majPage(1)
+							axios.get("sorties-en-mer/" + type + "/" + id).then(function(reponse){
+								self.sorties = reponse.data;
+								self.majPage(1);
 						});	
-						}
-												
+						}						
+					},
+					getVilles:function() {
+						let self = this;
+						axios.get("villes").then(function(reponse){
+							self.villes = reponse.data;
+						});	
+					},
+					getSiecles:function() {
+						let self = this;
+						axios.get("siecle").then(function(reponse){
+							self.siecles = reponse.data;
+						});						
 					},
 					getCategories:function(categorie) {
 						let self = this;
@@ -179,13 +193,12 @@
 						if(categorie == "bateaux"){
 							this.getTypesBateaux();
 							this.getBateaux();		
-						
 						}
 						if(categorie == "sorties en mer"){
+							this.getVilles();
+							this.getSiecles();
 							this.getSorties();						
-						}
-						
-							
+						}		
 					},
 					
 				}

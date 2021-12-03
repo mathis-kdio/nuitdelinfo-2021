@@ -33,6 +33,8 @@ app.get(['/admin','/admin.html'], function(req, res) {
     res.sendFile(path.join(__dirname +'/public/admin.html'));
 });
 
+
+//-----------------------------------  SELECT  -----------------------------------//
 app.get('/sauveteurs', function (req, res) {
     connection.query("SELECT nom, prenom, date_naissance FROM sauveteurs", function (err, result) {
         if (err) throw (err);
@@ -89,7 +91,7 @@ app.get('/stations/:id', function (req, res) {
 app.get('/sorties-en-mer/:type', function (req, res) {
     let type = req.params.type;
     if (type == 'all') {
-        connection.query("SELECT id, ville, date, commandant, succes, morts FROM sorties_en_mer", function (err, result) {
+        connection.query("SELECT v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant", function (err, result) {
             if (err) throw (err);
             res.send(result);
         })

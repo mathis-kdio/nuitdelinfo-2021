@@ -23,26 +23,25 @@
 				</v-container>
 				<v-container>
 					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-select v-if="categorieSelect == 'sorties en mer'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Sorties" return-object outlined ></v-select>
 					<v-row>
-						<v-row>
-							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
-								<v-card :dark="darkMode">
-									<v-card-title>
-										<div class="d-flex align-center">
-											<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
-											<v-container>{{ bateau.nom }}</v-container>
-										</div>
-									</v-card-title>
-									<v-card-text class="d-flex">
-										<v-container class="d-flex flex-column">
-											<v-container>
-												{{bateau.description}}
-											</v-container>
-										</v-container>	
-									</v-card-text>
-								</v-card>
-							</v-col>
-						</v-row>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
+										<v-container>{{ bateau.nom }}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-container class="d-flex flex-column">
+										<v-container>
+											{{bateau.description}}
+										</v-container>
+									</v-container>	
+								</v-card-text>
+							</v-card>
+						</v-col>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>
@@ -60,6 +59,27 @@
 											</v-container>
 										</v-col>
 									</v-row>
+								</v-card-text>
+							</v-card>
+						</v-col>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sortie, index) in sortiesAffiches" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-chip color="black" text-color="white">{{ sortie.id }}</v-chip>
+										<v-container>{{ sortie.ville }}</v-container>
+										<v-container>{{ sortie.siecle }}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-container class="d-flex flex-column">
+										<v-container v-if="sortie.succes == 0">
+											Cette mission à été réalisé le {{sortie.date}} avec succès par le commandant {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+										</v-container>
+										<v-container v-else>
+											Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+										</v-container>
+									</v-container>	
 								</v-card-text>
 							</v-card>
 						</v-col>

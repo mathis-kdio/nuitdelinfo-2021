@@ -36,7 +36,7 @@ app.get(['/admin','/admin.html'], function(req, res) {
 
 //-----------------------------------  SELECT  -----------------------------------//
 app.get('/sauveteurs', function (req, res) {
-    connection.query("SELECT nom, prenom, date_naissance FROM sauveteurs", function (err, result) {
+    connection.query("SELECT id, nom, prenom, date_naissance FROM sauveteurs", function (err, result) {
         if (err) throw (err);
         res.send(result);
     })
@@ -72,6 +72,20 @@ app.get('/stations', function (req, res) {
     })
 });
 
+app.get('/siecle', function (req, res) {
+    connection.query("SELECT id, nom FROM siecle", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
+app.get('/villes', function (req, res) {
+    connection.query("SELECT id, nom FROM villes", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
 app.get('/stations/:id', function (req, res) {
     let id = req.params.id;
     if (id == 'all') {
@@ -91,13 +105,37 @@ app.get('/stations/:id', function (req, res) {
 app.get('/sorties-en-mer/:type', function (req, res) {
     let type = req.params.type;
     if (type == 'all') {
-        connection.query("SELECT v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant", function (err, result) {
+        connection.query("SELECT id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant", function (err, result) {
             if (err) throw (err);
             res.send(result);
         })
     }
     else {
-        connection.query("SELECT v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE siecle=" + type, function (err, result) {
+        connection.query("SELECT id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE siecle=" + type, function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
+});
+
+
+//-----------------------------------  INSERT INTO  -----------------------------------//
+
+app.get('/create/sauveteurs/:nom/:prenom/:date_naissance', function (req, res) {
+    if (req.params.nom && req.params.prenom && req.params.date_naissance) {
+        connection.query("INSERT INTO sauveteurs VALUES ('', '" + req.params.nom + "', '" + req.params.prenom + "', '" + req.params.date_naissance + "')", function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
+});
+
+
+//-----------------------------------  UPDATE  -----------------------------------//
+
+app.get('/update/sauveteurs/:id/:nom/:prenom/:date_naissance', function (req, res) {
+    if (req.params.nom && req.params.prenom && req.params.date_naissance) {
+        connection.query("UPDATE sauveteurs SET nom='" +  req.params.nom + "', prenom='" + req.params.prenom +"', date_naissance='" + req.params.date_naissance + "' WHERE id=" + req.params.id, function (err, result) {
             if (err) throw (err);
             res.send(result);
         })

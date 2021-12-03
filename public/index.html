@@ -106,26 +106,26 @@
 							</v-card>
 						</v-col>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
-							<v-card :dark="darkMode">
+							<v-card 
+								:dark="darkMode"
+								class="mx-auto"
+							>
 								<v-card-title>
 									<div class="d-flex align-center">
 										<v-container>{{ station.nom }}</v-container>
 									</div>
 								</v-card-title>
-								<v-card-text class="d-flex">
-									<v-row>
-										<v-col sm="6" xs="12">
-											<v-container class="d-flex flex-column">
-												<v-container>
-													Création: {{ station.creation }}
-												</v-container>
-												<v-container>
-													Suppression: {{ station.suppression }}
-												</v-container>
-											</v-container>
-										</v-col>
-									</v-row>
-								</v-card-text>
+								<v-img v-bind:src="'images/stations/' + station.nom + '.png'"></v-img>
+								<v-container>
+									Création : {{ station.creation }}
+									Suppression : {{ station.suppression }}
+								</v-container>
+								<v-container>
+									Informations :
+									<div v-for="(text, i) in station.description.split('\n')" :key="i">
+										{{ text }}
+									</div>
+								</v-container>
 							</v-card>
 						</v-col>
 					</v-row>			
@@ -151,6 +151,7 @@
 					page: 1,
 					nbPages: 0,
 					sauveteursParPages: 4,
+<<<<<<< Updated upstream
 					firstname: '',
 					lastname: '',
 					birth:'',
@@ -163,6 +164,9 @@
 						notifications: false,
 						sound: true,
 						widgets: false,
+=======
+					showDescription: []
+>>>>>>> Stashed changes
 				},
 				created:function(){
 					this.getCategories();
@@ -212,6 +216,7 @@
 						self.majPage(1)
 						axios.get("stations").then(function(reponse){
 							self.stations = reponse.data;
+							self.showDescription = Array(self.stations.length).fill(false)
 						});
 					},
 					getCategories:function(categorie) {

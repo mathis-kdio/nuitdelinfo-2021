@@ -83,6 +83,26 @@
 											Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
 										</v-container>
 									</v-container>	
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-container>{{ station.nom }}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-row>
+										<v-col sm="6" xs="12">
+											<v-container class="d-flex flex-column">
+												<v-container>
+													Création: {{ station.creation }}
+												</v-container>
+												<v-container>
+													Suppression: {{ station.suppression }}
+												</v-container>
+											</v-container>
+										</v-col>
+									</v-row>
 								</v-card-text>
 							</v-card>
 						</v-col>
@@ -104,10 +124,11 @@
 					sorties:[],
 					sortiesAffiches:[],
 					categorieSelect: undefined,
+					stations:[],
 					types:[],
 					villes:[],
 					siecles:[],
-					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}, {name:"Stations"}],
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
@@ -185,6 +206,13 @@
 							self.siecles = reponse.data;
 						});						
 					},
+					getStations:function() {
+						let self = this;
+						self.majPage(1)
+						axios.get("stations").then(function(reponse){
+							self.stations = reponse.data;
+						});
+					},
 					getCategories:function(categorie) {
 						let self = this;
 						this.categorieSelect = categorie
@@ -199,6 +227,10 @@
 							this.getSiecles();
 							this.getSorties();						
 						}		
+						else if (categorie == "Stations") {
+							this.getStations();
+						}
+							
 					},
 					
 				}

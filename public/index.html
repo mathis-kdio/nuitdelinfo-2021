@@ -105,6 +105,29 @@
 								</v-card-text>
 							</v-card>
 						</v-col>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-container>{{ station.nom }}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-row>
+										<v-col sm="6" xs="12">
+											<v-container class="d-flex flex-column">
+												<v-container>
+													Création: {{ station.creation }}
+												</v-container>
+												<v-container>
+													Suppression: {{ station.suppression }}
+												</v-container>
+											</v-container>
+										</v-col>
+									</v-row>
+								</v-card-text>
+							</v-card>
+						</v-col>
 					</v-row>			
 				</v-container>
 			</v-app>
@@ -121,8 +144,9 @@
 					bateaux:[],
 					bateauxAffiches:[],
 					categorieSelect: undefined,
+					stations:[],
 					types:[],
-					categories:[{name:"sauveteurs"}, {name:"bateaux"}],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"Stations"}],
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
@@ -183,6 +207,13 @@
 						}
 												
 					},
+					getStations:function() {
+						let self = this;
+						self.majPage(1)
+						axios.get("stations").then(function(reponse){
+							self.stations = reponse.data;
+						});
+					},
 					getCategories:function(categorie) {
 						let self = this;
 						this.categorieSelect = categorie
@@ -192,6 +223,9 @@
 							this.getTypesBateaux();
 							this.getBateaux();		
 						
+						}
+						else if (categorie == "Stations") {
+							this.getStations();
 						}
 							
 					},

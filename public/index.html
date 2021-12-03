@@ -23,8 +23,10 @@
 						<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 					</v-container>
 					<v-container>
-						<v-container v-if="categorieSelect == 'bateaux'" fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-							<v-select :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+						<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+							<v-select v-if="categorieSelect == 'bateaux'" :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+							<v-select v-if="categorieSelect == 'sorties en mer'" :dark="darkMode" v-on:change="getSorties('ville', $event.id)" :items="villes" item-text="nom" label="Ville" return-object outlined ></v-select>
+							<v-select v-if="categorieSelect == 'sorties en mer'" :dark="darkMode" v-on:change="getSorties('siecle', $event.id)" :items="siecles" item-text="nom" label="Siècle" return-object outlined ></v-select>
 						</v-container>
 						<v-row>
 							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
@@ -44,115 +46,115 @@
 									</v-card-text>
 								</v-card>
 							</v-col>
-						</v-row>
-						<v-container  v-if="categorieSelect == 'sauveteurs'">
-							<div class="text-center"  >
-								<v-dialog
-									width="500"
-									v-model="dialog"
-								>
-									<template v-slot:activator="{ on, attrs }">
-									<v-btn
-										:dark="darkMode"
-										v-bind="attrs"
-										v-on="on"
+							<v-container  v-if="categorieSelect == 'sauveteurs'">
+								<div class="text-center"  >
+									<v-dialog
+										width="500"
+										v-model="dialog"
 									>
-										Créer un sauveteur
-									</v-btn>
-									</template>
-							
-									<v-card :dark="darkMode">
-										<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
+										<template v-slot:activator="{ on, attrs }">
+										<v-btn
+											:dark="darkMode"
+											v-bind="attrs"
+											v-on="on"
+										>
 											Créer un sauveteur
-										</v-card-title>
+										</v-btn>
+										</template>
 								
-										<v-card-text>
-											<v-form ref="form" class="mx-2" lazy-validation>
-												<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
-												<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
-												<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
-												<v-btn @click="reset">
-													reset
-												</v-btn>
-												<v-btn  @click="submitForm" @click="dialog = false">
-													créer
-												</v-btn>
-												<v-btn @click="dialog = false">
-													quitter
-												</v-btn>
-											</v-form>
-										</v-card-text>
-									</v-card>
-								</v-dialog>
-							</div>
-						</v-container>
-						</v-col>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sortie, index) in sortiesAffiches" :key="index">
-							<v-card :dark="darkMode">
-								<v-card-title>
-									<div class="d-flex align-center">
-										<v-container>
-											{{ sortie.ville }}
-											<v-spacer></v-spacer>  
-											{{ sortie.siecle }}
-										</v-container>
-									</div>
-								</v-card-title>
-								<v-card-text class="d-flex">
-									<v-container class="d-flex flex-column">
-										<v-container v-if="sortie.succes == 0">
-											Cette mission à été réalisé le {{sortie.date}} avec succès par le commandant {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
-										</v-container>
-										<v-container v-else>
-											Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
-										</v-container>
-									</v-container>
-								</v-card-text>
-							</v-card>
-						</v-col>	
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
-							<v-card :dark="darkMode">
-								<v-card-title>
-									<div class="d-flex align-center">
-										<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
-									</div>
-								</v-card-title>
-								<v-card-text class="d-flex">
-									<v-row>
-										<v-col sm="6" xs="12">
-											<v-container class="d-flex flex-column">
-												<v-container>
-													{{ sauveteur.date_naissance }}
-												</v-container>
+										<v-card :dark="darkMode">
+											<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
+												Créer un sauveteur
+											</v-card-title>
+									
+											<v-card-text>
+												<v-form ref="form" class="mx-2" lazy-validation>
+													<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
+													<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
+													<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
+													<v-btn @click="reset">
+														reset
+													</v-btn>
+													<v-btn  @click="submitForm" @click="dialog = false">
+														créer
+													</v-btn>
+													<v-btn @click="dialog = false">
+														quitter
+													</v-btn>
+												</v-form>
+											</v-card-text>
+										</v-card>
+									</v-dialog>
+								</div>
+							</v-container>
+							</v-col>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sortie, index) in sortiesAffiches" :key="index">
+								<v-card :dark="darkMode">
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-container>
+												{{ sortie.ville }}
+												<v-spacer></v-spacer>  
+												{{ sortie.siecle }}
 											</v-container>
-										</v-col>
-									</v-row>
-								</v-card-text>
-							</v-card>
-						</v-col>
-						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
-							<v-card 
-								:dark="darkMode"
-								class="mx-auto"
-							>
-								<v-card-title>
-									<div class="d-flex align-center">
-										<v-container>{{ station.nom }}</v-container>
-									</div>
-								</v-card-title>
-								<v-img v-bind:src="'images/stations/' + station.nom + '.png'"></v-img>
-								<v-container>
-									Création : {{ station.creation }}
-									Suppression : {{ station.suppression }}
-								</v-container>
-								<v-container>
-									Informations :
-									<div v-for="(text, i) in station.description.split('\n')" :key="i">
-										{{ text }}
-									</div>
-								</v-container>
-							</v-card>
-						</v-col>		
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-container class="d-flex flex-column">
+											<v-container v-if="sortie.succes == 0">
+												Cette mission à été réalisé le {{sortie.date}} avec succès par le commandant {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+											</v-container>
+											<v-container v-else>
+												Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+											</v-container>
+										</v-container>
+									</v-card-text>
+								</v-card>
+							</v-col>	
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
+								<v-card :dark="darkMode">
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-container>{{ sauveteur.nom }} {{sauveteur.prenom}}</v-container>
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-row>
+											<v-col sm="6" xs="12">
+												<v-container class="d-flex flex-column">
+													<v-container>
+														{{ sauveteur.date_naissance }}
+													</v-container>
+												</v-container>
+											</v-col>
+										</v-row>
+									</v-card-text>
+								</v-card>
+							</v-col>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
+								<v-card 
+									:dark="darkMode"
+									class="mx-auto"
+								>
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-container>{{ station.nom }}</v-container>
+										</div>
+									</v-card-title>
+									<v-img v-bind:src="'images/stations/' + station.nom + '.png'"></v-img>
+									<v-container>
+										Création : {{ station.creation }}
+										Suppression : {{ station.suppression }}
+									</v-container>
+									<v-container>
+										Informations :
+										<div v-for="(text, i) in station.description.split('\n')" :key="i">
+											{{ text }}
+										</div>
+									</v-container>
+								</v-card>
+							</v-col>	
+						</v-row>	
 					</v-container>
 				<v-container>
 			</v-app>

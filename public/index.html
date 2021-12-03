@@ -11,38 +11,36 @@
 	<body>
 		<div id="app">
             <v-app :dark="darkMode">
-				<!--<div >
-					<v-sheet color="white"elevation="6"height="100">
-						<v-img width="500px" height="150px" src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>
-					</v-sheet>
-				</div>-->
+				<v-container >
+					<v-img src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>	
+				</v-container>
+				
 				<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+					
 					<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
 					<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
-					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
 					<v-row>
-						<v-row>
-							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
-								<v-card :dark="darkMode">
-									<v-card-title>
-										<div class="d-flex align-center">
-											<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
-											<v-container>{{ bateau.nom }}</v-container>
-										</div>
-									</v-card-title>
-									<v-card-text class="d-flex">
-										<v-container class="d-flex flex-column">
-											<v-container>
-												{{bateau.description}}
-											</v-container>
-										</v-container>	
-									</v-card-text>
-								</v-card>
-							</v-col>
-						</v-row>
+						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
+							<v-card :dark="darkMode">
+								<v-card-title>
+									<div class="d-flex align-center">
+										<v-chip color="black" text-color="white">{{ bateau.id }}</v-chip>
+										<v-container>{{ bateau.nom }}</v-container>
+									</div>
+								</v-card-title>
+								<v-card-text class="d-flex">
+									<v-container class="d-flex flex-column">
+										<v-container>
+											{{bateau.description}}
+										</v-container>
+									</v-container>	
+								</v-card-text>
+							</v-card>
+						</v-col>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>

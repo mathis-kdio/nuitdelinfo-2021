@@ -22,7 +22,9 @@
 					<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 				</v-container>
 				<v-container>
-					<v-select v-if="categorieSelect == 'bateaux'":dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					<v-container v-if="categorieSelect == 'bateaux'" fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+						<v-select :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+					</v-container>
 					<v-row>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
 							<v-card :dark="darkMode">
@@ -41,6 +43,48 @@
 								</v-card-text>
 							</v-card>
 						</v-col>
+					<v-container  v-if="categorieSelect == 'sauveteurs'">
+						<div class="text-center"  >
+						<v-dialog
+						  width="500"
+						  v-model="dialog"
+						>
+						  <template v-slot:activator="{ on, attrs }">
+							<v-btn
+								:dark="darkMode"
+							  v-bind="attrs"
+							  v-on="on"
+							>
+							  Créer un sauveteur
+							</v-btn>
+						  </template>
+					
+						  <v-card :dark="darkMode">
+							<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
+							  Créer un sauveteur
+							</v-card-title>
+					
+							<v-card-text>
+								<v-form ref="form" class="mx-2" lazy-validation>
+									<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
+									<v-text-field v-model="lastname" clearable label="Prénom"></v-text-field>
+									<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
+									<v-btn @click="reset">
+										reset
+									</v-btn>
+									<v-btn  @click="submitForm" @click="dialog = false">
+										créer
+									</v-btn>
+									<v-btn @click="dialog = false">
+										quitter
+									</v-btn>
+								</v-form>
+									
+							</v-card-text>
+						  </v-card>
+						</v-dialog>
+					  </div>	
+					</v-container>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>
@@ -82,7 +126,19 @@
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
-					sauveteursParPages: 4
+					sauveteursParPages: 4,
+					firstname: '',
+					lastname: '',
+					birth:'',
+					nameRules: [
+						v => !!v || 'Name is required',
+						v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+					],
+				
+						dialog: false,
+						notifications: false,
+						sound: true,
+						widgets: false,
 				},
 				created:function(){
 					this.getCategories();
@@ -138,6 +194,19 @@
 						
 						}
 							
+					},
+					submitForm () {
+						this.$refs.form.validate();
+						if(this.$refs.form.validate()){
+							axios.get("create/sauveteurs/" + this.firstname + "/" +this.lastname + "/" +this.birth).then(function(reponse){
+							self.bateaux = reponse.data;
+							
+						});
+						}
+						
+					},
+					reset () {
+						this.$refs.form.reset()
 					},
 					
 				}

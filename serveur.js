@@ -65,13 +65,6 @@ app.get('/bateaux/:type', function (req, res) {
     }
 });
 
-app.get('/stations', function (req, res) {
-    connection.query("SELECT id, nom, creation, suppression FROM stations", function (err, result) {
-        if (err) throw (err);
-        res.send(result);
-    })
-});
-
 app.get('/siecle', function (req, res) {
     connection.query("SELECT id, nom FROM siecle", function (err, result) {
         if (err) throw (err);
@@ -86,16 +79,23 @@ app.get('/villes', function (req, res) {
     })
 });
 
+app.get('/stations', function (req, res) {
+    connection.query("SELECT id, nom, creation, suppression, description FROM stations", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
 app.get('/stations/:id', function (req, res) {
     let id = req.params.id;
     if (id == 'all') {
-        connection.query("SELECT id, nom, creation, suppression FROM stations", function (err, result) {
+        connection.query("SELECT id, nom, creation, suppression, description FROM stations", function (err, result) {
             if (err) throw (err);
             res.send(result);
         })   
     }
     else {
-        connection.query("SELECT id, nom, creation, suppression FROM stations WHERE id=" + id, function (err, result) {
+        connection.query("SELECT id, nom, creation, suppression, description FROM stations WHERE id=" + id, function (err, result) {
             if (err) throw (err);
             res.send(result);
         })

@@ -82,7 +82,10 @@
 										<v-container v-else>
 											Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
 										</v-container>
-									</v-container>	
+									</v-container>
+								</v-card-text>
+							</v-card>
+						</v-col>
 						<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(station, index) in stations" :key="index">
 							<v-card :dark="darkMode">
 								<v-card-title>

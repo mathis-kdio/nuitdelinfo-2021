@@ -10,20 +10,23 @@
     </head>
 	<body>
 		<div id="app">
-      <v-app :dark="darkMode">
+      		<v-app :dark="darkMode">
 				<v-container fluid :dark="darkMode" :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
 					<v-container>
 						<v-img src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>	
 					</v-container>	
 					<v-container :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-						
+						<v-text-field id="search" label="Recherche" prepend-icon="mdi-magnify" @click:prepend="search"></v-text-field>
+
 						<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
 						<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
 						<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>
 					</v-container>
 					<v-container>
-						<v-container v-if="categorieSelect == 'bateaux'" fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-							<v-select :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+						<v-container fluid :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
+							<v-select v-if="categorieSelect == 'bateaux'" :dark="darkMode" :label="`Thème: ${darkMode.toString()}`"v-on:change="getBateaux($event.id)" :items="types" item-text="nom" label="Bateaux" return-object outlined ></v-select>
+							<v-select v-if="categorieSelect == 'sorties en mer'" :dark="darkMode" v-on:change="getSorties('ville', $event.id)" :items="villes" item-text="nom" label="Ville" return-object outlined ></v-select>
+							<v-select v-if="categorieSelect == 'sorties en mer'" :dark="darkMode" v-on:change="getSorties('siecle', $event.id)" :items="siecles" item-text="nom" label="Siècle" return-object outlined ></v-select>
 						</v-container>
 						<v-row>
 							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(bateau, index) in bateauxAffiches" :key="index">
@@ -43,48 +46,71 @@
 									</v-card-text>
 								</v-card>
 							</v-col>
-						<v-container  v-if="categorieSelect == 'sauveteurs'">
-							<div class="text-center"  >
-							<v-dialog
-								width="500"
-								v-model="dialog"
-							>
-								<template v-slot:activator="{ on, attrs }">
-								<v-btn
-									:dark="darkMode"
-									v-bind="attrs"
-									v-on="on"
-								>
-									Créer un sauveteur
-								</v-btn>
-								</template>
-						
+							<v-container  v-if="categorieSelect == 'sauveteurs'">
+								<div class="text-center"  >
+									<v-dialog
+										width="500"
+										v-model="dialog"
+									>
+										<template v-slot:activator="{ on, attrs }">
+										<v-btn
+											:dark="darkMode"
+											v-bind="attrs"
+											v-on="on"
+										>
+											Créer un sauveteur
+										</v-btn>
+										</template>
+								
+										<v-card :dark="darkMode">
+											<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
+												Créer un sauveteur
+											</v-card-title>
+									
+											<v-card-text>
+												<v-form ref="form" class="mx-2" lazy-validation>
+													<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
+													<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
+													<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
+													<v-btn @click="reset">
+														reset
+													</v-btn>
+													<v-btn  @click="submitForm" @click="dialog = false">
+														créer
+													</v-btn>
+													<v-btn @click="dialog = false">
+														quitter
+													</v-btn>
+												</v-form>
+											</v-card-text>
+										</v-card>
+									</v-dialog>
+								</div>
+							</v-container>
+							</v-col>
+							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sortie, index) in sortiesAffiches" :key="index">
 								<v-card :dark="darkMode">
-								<v-card-title class="text-h5 grey lighten-2" :dark="darkMode">
-									Créer un sauveteur
-								</v-card-title>
-						
-								<v-card-text>
-									<v-form ref="form" class="mx-2" lazy-validation>
-										<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
-										<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
-										<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
-										<v-btn @click="reset">
-											reset
-										</v-btn>
-										<v-btn  @click="submitForm" @click="dialog = false">
-											créer
-										</v-btn>
-										<v-btn @click="dialog = false">
-											quitter
-										</v-btn>
-									</v-form>
-										
-								</v-card-text>
+									<v-card-title>
+										<div class="d-flex align-center">
+											<v-container>
+												{{ sortie.ville }}
+												<v-spacer></v-spacer>  
+												{{ sortie.siecle }}
+											</v-container>
+										</div>
+									</v-card-title>
+									<v-card-text class="d-flex">
+										<v-container class="d-flex flex-column">
+											<v-container v-if="sortie.succes == 0">
+												Cette mission à été réalisé le {{sortie.date}} avec succès par le commandant {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+											</v-container>
+											<v-container v-else>
+												Cette mission à été réalisé le {{sortie.date}} mais à écoué. Le commandant était {{sortie.commandant}}. Il y a eu {{sortie.morts}} morts.
+											</v-container>
+										</v-container>
+									</v-card-text>
 								</v-card>
-							</v-dialog>
-							</div>	
-						</v-container>
+							</v-col>	
 							<v-col cols="12" sm="12" md="6" lg="6" xl="4" v-for="(sauveteur, index) in sauveteurs" :key="index">
 								<v-card :dark="darkMode">
 									<v-card-title>
@@ -127,8 +153,8 @@
 										</div>
 									</v-container>
 								</v-card>
-							</v-col>
-						</v-row>			
+							</v-col>	
+						</v-row>	
 					</v-container>
 				<v-container>
 			</v-app>
@@ -144,10 +170,15 @@
 					sauveteurs:[],
 					bateaux:[],
 					bateauxAffiches:[],
+					sorties:[],
+					sortiesAffiches:[],
 					categorieSelect: undefined,
 					stations:[],
 					types:[],
-					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"Stations"}],
+					villes:[],
+					siecles:[],
+					categories:[{name:"sauveteurs"}, {name:"bateaux"}, {name:"sorties en mer"}, {name:"Stations"}],
+					search:[],
 					darkMode: false,
 					page: 1,
 					nbPages: 0,
@@ -174,7 +205,10 @@
 						this.sauveteurs = []
 						this.bateauxAffiches = []
 						this.bateauxAffiches = this.bateaux
-						this.bateaux= []
+						this.bateaux = []
+						this.sortiesAffiches = []
+						this.sortiesAffiches = this.sorties
+						this.sorties = []
 						
 					},
 					getTypesBateaux:function() {
@@ -186,10 +220,9 @@
 					},
 					getSauveteurs:function() {
 						let self = this;
-						self.majPage(1)
+						self.majPage(1);
 						axios.get("sauveteurs").then(function(reponse){
 							self.sauveteurs = reponse.data;
-							
 						});
 					},
 					getBateaux:function(type) {
@@ -197,16 +230,43 @@
 						if(type == undefined){
 							axios.get("bateaux/all").then(function(reponse){
 								self.bateaux = reponse.data;
-								self.majPage(1)
+								self.majPage(1);
 							});	
 						}
 						else{
 							axios.get("bateaux/" + type).then(function(reponse){
-							self.bateaux = reponse.data;
-							self.majPage(1)
+								self.bateaux = reponse.data;
+								self.majPage(1);
 						});	
+						}					
+					},
+					getSorties:function(type, id) {
+						let self = this;
+						console.log(type);
+						if(type == undefined){
+							axios.get("sorties-en-mer/").then(function(reponse){
+								self.sorties = reponse.data;
+								self.majPage(1);
+							});	
 						}
-												
+						else{
+							axios.get("sorties-en-mer/" + type + "/" + id).then(function(reponse){
+								self.sorties = reponse.data;
+								self.majPage(1);
+						});	
+						}						
+					},
+					getVilles:function() {
+						let self = this;
+						axios.get("villes").then(function(reponse){
+							self.villes = reponse.data;
+						});	
+					},
+					getSiecles:function() {
+						let self = this;
+						axios.get("siecle").then(function(reponse){
+							self.siecles = reponse.data;
+						});						
 					},
 					getStations:function() {
 						let self = this;
@@ -224,12 +284,23 @@
 						if(categorie == "bateaux"){
 							this.getTypesBateaux();
 							this.getBateaux();		
-						
 						}
+						if(categorie == "sorties en mer"){
+							this.getVilles();
+							this.getSiecles();
+							this.getSorties();						
+						}		
 						else if (categorie == "Stations") {
 							this.getStations();
 						}
 							
+					},
+					search: function() {
+						let self = this;
+						var mysearch = document.getElementById("search").value;
+						axios.get("search/" + mysearch).then(function(reponse){
+							self.search = reponse.data;
+						});
 					},
 					submitForm () {
 						this.$refs.form.validate();

@@ -72,6 +72,20 @@ app.get('/stations', function (req, res) {
     })
 });
 
+app.get('/siecle', function (req, res) {
+    connection.query("SELECT id, nom FROM siecle", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
+app.get('/villes', function (req, res) {
+    connection.query("SELECT id, nom FROM villes", function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
 app.get('/stations/:id', function (req, res) {
     let id = req.params.id;
     if (id == 'all') {

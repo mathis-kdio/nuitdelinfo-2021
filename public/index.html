@@ -16,7 +16,8 @@
 						<v-img src="https://sauveteurdudunkerquois.fr/wp-content/uploads/2021/09/BANNIERE-COMPLETE-2048x679-1.jpg"></v-img>	
 					</v-container>	
 					<v-container :class="'ma-0 pa-0 pt-5 d-flex flex-wrap justify-center grey ' + ((!darkMode)?'lighten-2':'darken-2')">
-						
+						<v-text-field id="search" label="Recherche" prepend-icon="mdi-magnify" @click:prepend="search"></v-text-field>
+
 						<v-select :dark="darkMode" v-on:change="getCategories($event.name)" :items="categories"  item-text="name" label="Catégories" return-object outlined ></v-select>
 						<v-switch :dark="darkMode" v-model="darkMode" :label="`Thème: ${darkMode.toString()}`"></v-switch>
 						<v-pagination :dark="darkMode" @input="majPage" v-model="page" :length="nbPages" circle></v-pagination>

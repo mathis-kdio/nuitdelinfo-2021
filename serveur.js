@@ -130,6 +130,13 @@ app.get('/sorties-en-mer/ville/:IdVille', function (req, res) {
     })
 });
 
+app.get('/search/:mysearch', function (req, res) {
+    connection.query("SELECT sem.id, v.nom AS ville, date, sa.nom AS commandant, succes, morts, si.nom AS siecle FROM sorties_en_mer AS sem JOIN siecle AS si ON si.id = sem.siecle JOIN villes AS v ON v.id = sem.ville JOIN sauveteurs AS sa ON sa.id = sem.commandant WHERE v.id=" + req.params.IdVille, function (err, result) {
+        if (err) throw (err);
+        res.send(result);
+    })
+});
+
 
 //-----------------------------------  INSERT INTO  -----------------------------------//
 

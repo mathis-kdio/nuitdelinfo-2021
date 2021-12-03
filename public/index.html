@@ -67,7 +67,7 @@
 							<v-card-text>
 								<v-form ref="form" class="mx-2" lazy-validation>
 									<v-text-field v-model="firstname" :rules="nameRules" clearable label="Nom"></v-text-field>
-									<v-text-field v-model="lastname" clearable label="Prénom"></v-text-field>
+									<v-text-field v-model="lastname" :rules="nameRules" clearable label="Prénom"></v-text-field>
 									<v-text-field v-model="birth" clearable label="Date_de_Naissance"></v-text-field>
 									<v-btn @click="reset">
 										reset

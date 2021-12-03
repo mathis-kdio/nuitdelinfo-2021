@@ -103,3 +103,27 @@ app.get('/sorties-en-mer/:type', function (req, res) {
         })
     }
 });
+
+
+//-----------------------------------  INSERT INTO  -----------------------------------//
+
+app.get('/create/sauveteurs/:nom/:prenom/:date_naissance', function (req, res) {
+    if (req.params.nom && req.params.prenom && req.params.date_naissance) {
+        connection.query("INSERT INTO sauveteurs VALUES ('', '" + req.params.nom + "', '" + req.params.prenom + "', '" + req.params.date_naissance + "')", function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
+});
+
+
+//-----------------------------------  UPDATE  -----------------------------------//
+
+app.get('/update/sauveteurs/:id/:nom/:prenom/:date_naissance', function (req, res) {
+    if (req.params.nom && req.params.prenom && req.params.date_naissance) {
+        connection.query("UPDATE sauveteurs SET nom='" +  req.params.nom + "', prenom='" + req.params.prenom +"', date_naissance='" + req.params.date_naissance + "' WHERE id=" + req.params.id, function (err, result) {
+            if (err) throw (err);
+            res.send(result);
+        })
+    }
+});
